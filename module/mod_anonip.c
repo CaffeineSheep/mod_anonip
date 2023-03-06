@@ -56,7 +56,7 @@ static int change_remote_ip(request_rec *r) {
     anonip_server_cfg *cfg = (anonip_server_cfg *)ap_get_module_config(r->server->module_config,
                                                                    &anonip_module);
     if (cfg->mask<=0 || cfg->mask>4)
-        return DECLINED;
+        cfg->mask = 3; // return DECLINED;
 
 #if AP_SERVER_MAJORVERSION_NUMBER > 2 || \
 (AP_SERVER_MAJORVERSION_NUMBER == 2 && AP_SERVER_MINORVERSION_NUMBER >= 4)
@@ -65,7 +65,7 @@ static int change_remote_ip(request_rec *r) {
     inet_aton(r->connection->remote_ip, &ip);
 #endif
 	for (i=0; i<cfg->mask; i++)
-		((char*)&ip)[3-i] = 0;
+		((char*)&ip)[i] = 0;
 
 #if AP_SERVER_MAJORVERSION_NUMBER > 2 || \
 (AP_SERVER_MAJORVERSION_NUMBER == 2 && AP_SERVER_MINORVERSION_NUMBER >= 4)
